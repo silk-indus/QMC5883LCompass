@@ -147,7 +147,7 @@ void QMC5883LCompass::setSmoothing(byte steps, bool adv){
 	_smoothAdvanced = (adv == true) ? true : false;
 }
 
-void QMC5883LCompass::calibrate() {
+void QMC5883LCompass::calibrate(float norm_flux) {
 	clearCalibration();
 	long calibrationData[3][2] = {{65000, -65000}, {65000, -65000}, {65000, -65000}};
   	long	x = calibrationData[0][0] = calibrationData[0][1] = getX();
@@ -186,6 +186,7 @@ void QMC5883LCompass::calibrate() {
 	}
 
 	setCalibration(
+		norm_flux,
 		calibrationData[0][0],
 		calibrationData[0][1],
 		calibrationData[1][0],
@@ -205,7 +206,7 @@ void QMC5883LCompass::calibrate() {
 
 	@deprecated Instead of setCalibration, use the calibration offset and scale methods.
 **/
-void QMC5883LCompass::setCalibration(int x_min, int x_max, int y_min, int y_max, int z_min, int z_max){
+void QMC5883LCompass::setCalibration(float mag_earth, int x_min, int x_max, int y_min, int y_max, int z_min, int z_max){
 	setCalibrationOffsets(
 		(x_min + x_max)/2,
 		(y_min + y_max)/2,
@@ -219,9 +220,9 @@ void QMC5883LCompass::setCalibration(int x_min, int x_max, int y_min, int y_max,
 	float avg_delta = (x_avg_delta + y_avg_delta + z_avg_delta) / 3;
 
 	setCalibrationScales(
-		avg_delta / x_avg_delta,
-		avg_delta / y_avg_delta,
-		avg_delta / z_avg_delta
+		mag_earth / x_avg_delta,
+		mag_earth / y_avg_delta,
+		mag_earth / z_avg_delta
 	);
 }
 
