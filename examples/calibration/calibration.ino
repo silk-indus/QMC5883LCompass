@@ -39,6 +39,7 @@ Release under the GNU General Public License v3
 #include <QMC5883LCompass.h>
 
 QMC5883LCompass compass;
+float norm_flux = 48.0;
 
 void setup() {
   Serial.begin(9600);
@@ -49,7 +50,7 @@ void setup() {
   delay(5000);
 
   Serial.println("CALIBRATING. Keep moving your sensor...");
-  compass.calibrate();
+  compass.calibrate(norm_flux);
 
   Serial.println("DONE. Copy the lines below and paste it into your projects sketch.);");
   Serial.println();
